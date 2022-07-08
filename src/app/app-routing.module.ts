@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CreateTamplateComponent } from './create-tamplate/create-tamplate.component';
 
 const routes: Routes = [
-  {path: 'temp', component: CreateTamplateComponent}
+  {path: '', component: CreateTamplateComponent}
 ];
 
 @NgModule({
