@@ -1,30 +1,72 @@
-<div class="container mt-4">
-	<form [formGroup]="createReportForm">
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="form-group row">
-					<!-- <label class="col-sm-2 col-form-label">Select Tamplate</label> -->
-					<label for="inputReportName" class="col-sm-2 col-form-label">Report Name</label>
-					<select class="form-control col-sm-6" formControlName="reportName">
-					  <option value="" hidden>Select</option>
-					  <option *ngFor="let item of templateData" value="{{item.name}}">{{item.name}}</option>
-					</select>
-				</div>
-				
+<!-- old -->
+<div  class="top_nav app-header-content border">
+	<div class="nav_menu">
+	  <nav class="">
+		<!-- fot site name -->
+		<div class="d-flex justify-content-between header-row pt-1">
+		  <div class="">
+			<div class="row">
+			  <div class="page-name pl-4">
+				<img src="assets/images/clipboard.svg" alt="avatar"/>
+				<span class="site-name mr-3">Smart Platforms</span>
+				<!-- <span *ngIf="toggle" class="site-name mr-2">{{siteName}}</span> -->
+			  </div>
 			</div>
-			<div class="col-sm-12">
-				<div class="form-group row">
-					<label for="importExcelFile" class="col-sm-2 col-form-label">Select Tamplate</label>
-					<div class="col-sm-6">
-						<input type="file" id="importExcelFile" formControlName="importExcelFiles" (change)="changeFileDemo($event)">
-						<input type="button" id="loadExcel" value="import" class="button btn btn-secondary" (click)="loadExcel($event)">
-						<input type="button" id="CancelLoadExcel" value="Cancel" class="button btn btn-light ml-2" (click)="CancelLoadExcel()">
+		  </div>
+  
+		</div>
+	  </nav>
+	</div>
+  </div>
+  <ul id="progressbar" class="mt-2" style="margin-left: 200px;">
+	<li class="active text-center" id="account"><strong >Stap 1</strong></li>
+	<li [ngClass]="[loadExcelBtn ? 'active' :'']" id="payment" class="text-center"><strong >Step 2</strong></li>
+	<li [ngClass]="[previewBtn ? 'active' :'']" id="confirm" class="text-center"><strong>Step 3</strong></li>
+</ul>
+
+<div class="card col-md-8 offset-md-2" [ngClass]="[showExelSheet ? 'hide-sheet' :'show-sheet']">
+	<!-- <div class="card-header">
+	  Featured
+	</div> -->
+	<div class="card-body">
+		<div class="container mt-4" [ngClass]="[showExelSheet ? 'hide-sheet' :'show-sheet']">
+			<form [formGroup]="createReportForm">
+				<div class="row">
+					<div class="col">
+						<div class="form-group row col-sm-8 offset-md-3">
+							<!-- <label class="col-sm-2 col-form-label">Select Tamplate</label> -->
+							<label for="inputReportName" class=" col-form-label">Report Name</label>
+							<select class="form-control col-sm-6 ml-4" formControlName="reportName">
+							  <option value="" hidden>Select</option>
+							  <option *ngFor="let item of templateData" value="{{item.name}}">{{item.name}}</option>
+							</select>
+						</div>	
 					</div>
 				</div>
-			</div>
-		</div>
-	</form>  <!-- end form here -->
-</div> <!-- end container here -->
+				<div class="col">
+					<div class="col-md-8 offset-md-3">
+						<div class="form-group row">
+							<!-- <label for="importExcelFile" class="col-sm-2 col-form-label">Select Template</label> -->
+							<label for="importExcelFile" class=" col-form-label">Select Template</label>
+							<div class="col">
+								<input type="file" id="importExcelFile" formControlName="importExcelFiles" (change)="changeFileDemo($event)">
+							</div>
+							
+						</div>
+						<div class="form-group row col offset-sm-2">
+							<input type="button" id="loadExcel" value="import" class="button btn btn-secondary" (click)="loadExcel($event)">
+							<input type="button" id="CancelLoadExcel" value="Cancel" class="button btn btn-light ml-2" (click)="CancelLoadExcel()"> 
+						</div>
+					</div>
+				</div>
+				
+			</form>  <!-- end form here -->
+		</div> <!-- end container here -->
+	</div>
+</div>
+
+
+
 <div  [ngClass]="[showExelSheet ? 'show-sheet' : 'hide-sheet']">
 	<gc-spread-sheets 
 		[hostStyle]="hostStyle"
@@ -37,39 +79,37 @@
 		(workbookInitialized)="initSpread($event)">	
 	</gc-spread-sheets>
 	
+	<div class="options-container" [ngClass]="[showExelSheet ? 'show-sheet' : 'hide-sheet']" *ngIf="dataKeys?.length && !showBackButton">
 	
-	<div class="options-container" *ngIf="dataKeys?.length && !showBackButton">
-		
 		<div class="form-group row">
 			<div class="col">
 				<label for="" >Report Name :{{createReportForm.value.reportName}} </label>
 			</div>
 		</div>
 		<div class="form-group row">
-					<!-- <label for="inputReportName" >Report Name</label> -->
-					<div class="col-sm-8 mt-1">
+					<div class="col-sm-7 mt-1">
 						<label for="" >Repeat Row: {{startRow}}</label>
 					</div>
-					<div class="col-sm-4">
-						<input type="number" class="form-control" id="inputReportName" (change)="setStartRow($event)" [(ngModel)]="startRow">
+					<div class="col-sm-5">
+						<input type="number" *ngIf="selectDiv" class="form-control" id="inputReportName"  (change)="setStartRow($event)" [(ngModel)]="startRow">
 					</div>
 				</div>
 		<div class="option-row">
 		<span *ngIf="isCopied" class="is-copied">Text copied..</span>
 		<ul class="list-group" >
-			<li *ngFor="let key of dataKeys; let i = index" class="list-group-item"><span #elementContentToCopy>{{key}}</span> <span id="{{key}}" title="Insert text" class="copy" (click)="clickToCopyText(key)">Insert</span></li>
+			<li *ngFor="let key of dataKeys; let i = index" class="list-group-item"><span #elementContentToCopy>{{key}}</span> <span id="{{key}}" title="Insert text" class="copy" (click)="clickToCopyText(key)" *ngIf="selectDiv">Insert</span></li>
 		</ul>
 		</div>
+		<button type="button"  class="btn btn-primary ml-3 mt-1" *ngIf=" selectDiv" [disabled]="loadingBtn" (click)="preview($event)">
+			Preview </button>
+		<button type="button" id="CancelLoadExcel"  class="btn btn-danger button btn ml-2 mt-1 cancelBtn" (click)="CancelLoadExcel()"> Clear</button>
+	
 	</div>
-	<button type="button"  class="btn btn-primary ml-3" (click)="preview($event)">
-		Preview </button>
 	<!-- <button type="button"  class="btn btn-primary ml-3" (click)="backToSheet()">Back to sheet</button> -->
 </div>
-<!-- <div *ngIf="previewExelSheet">
-	<gc-spread-sheets 
-		[hostStyle]="hostStylePreivew" 
-		(workbookInitialized)="initSpreadpreview($event)">	
-	</gc-spread-sheets>
+
+<!-- <div *ngIf="loadingBtn">
+	<h1>Loading ..</h1>
 </div> -->
 
 

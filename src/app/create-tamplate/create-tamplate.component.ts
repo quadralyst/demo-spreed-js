@@ -18,13 +18,6 @@ import { map } from 'rxjs';
 import { style } from '@angular/animations';
 
 
-
-
-
-
-
-
-
 @Component({
   selector: 'app-create-tamplate',
   templateUrl: './create-tamplate.component.html',
@@ -39,10 +32,11 @@ export class CreateTamplateComponent implements OnInit {
   public showBackButton = false;
   public loadingBtn = false;
   hostStyle = {
+    // width: 'calc(100% - 280px)',
     width: 'calc(100% - 280px)',
     height: '500px',
     overflow: 'hidden',
-    float: 'left'
+    float: 'right'
   };
   hostStylePreivew = {
     width: 'calc(100% - 280px)',
@@ -54,21 +48,22 @@ export class CreateTamplateComponent implements OnInit {
   public previewExelSheet = false;
   public workbookObjData: any;
   public startRow :any;
+  public previewBtn = false;
   public templateData = [
     {
-      name : "Report 1"
+      name : "RECO_001"
     },
     {
-      name : "Report 2"
+      name : "FIN 002"
     },
     {
-      name : "Report 3"
+      name : "FIN 003"
     },
     {
-      name : "Report 4"
+      name : "FIN 004"
     },
     {
-      name : "Report 5"
+      name : "RECO_002"
     },
 
   ]
@@ -108,9 +103,11 @@ export class CreateTamplateComponent implements OnInit {
   ]
   public dataKeys: any;
   public dataValues: any;
+  public loadExcelBtn = false;
   startForm: any;
   public selectRow : any;
   public selectCol : any;
+  public selectDiv = true;
   constructor(
     private fb: FormBuilder,
   ) { }
@@ -137,12 +134,18 @@ public setStartRow(e:any) {
   public CancelLoadExcel() {
     this.sheetData = '';
     this.importExcelFile = '';
+    this.startRow = '';
+    this.previewBtn = false;
+    this.loadExcelBtn = false;
+    this.createReportForm.reset();
+    this.selectDiv = true;
     this.showExelSheet = false;
     this.createReportForm.get('importExcelFiles') ?.reset();
     this.createReportForm.reset();
   }
 
   loadExcel(e: any) {
+    this.loadExcelBtn = true;
     if (this.createReportForm.value.importExcelFiles) {
       this.showBackButton = false;
       this.showExelSheet = true;
@@ -150,9 +153,7 @@ public setStartRow(e:any) {
       console.log('this.importExcelFile', this.importExcelFile)
       let spread = this.spread;
       let excelIo = new ExcelIO.IO();
-      // this.excelIO = new Excel.IO();
       let excelFile = this.importExcelFile;
-      // let password = this.password;
       let incrementalEle = document.getElementById("incremental") as HTMLInputElement;
       let loadingStatus = document.getElementById("loadingStatus") as HTMLInputElement;
 
@@ -163,75 +164,8 @@ public setStartRow(e:any) {
       excelIo.open(excelFile, (json: any) => {
         let workbookObj = json;
         // console.log('workbookObj*********************', workbookObj);
-
-
-
-
-        // if (incrementalEle.checked) {
-        //   spread.fromJSON(workbookObj, {
-        //     incrementalLoading: {
-        //       loading: function (progress: any, args: any) {
-        //         progress = progress * 100;
-        //         loadingStatus.value = progress;
-        //         console.log("current loading sheet", args.sheet && args.sheet.name());
-        //       },
-        //       loaded: function () {
-        //       }
-        //     }
-        //   });
-        // } else {
-        // }
         spread.fromJSON(workbookObj);
         this.workbookObjData = workbookObj;
-
-
-
-
-
-        // let sheet = this.spread.getActiveSheet();
-        // let slectedRow = 3;
-        // this.headerJsonData.map(res => {
-        //   let newRow = slectedRow + 1
-        //   sheet.addRows(newRow, 1);
-        //   sheet.copyTo(3, 0, newRow, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.value);
-        //   sheet.copyTo(3, 0, newRow, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.style);
-        //   sheet.copyTo(3, 0, newRow, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.formula);
-        //   slectedRow = slectedRow + 1;
-        // })
-
-
-        // let seetName: string = '';
-        // spread.fromJSON(json, {
-        //   incrementalLoading: {
-        //     loading: function (progress: any, args: any) {
-        //       seetName = args.sheet && args.sheet.name();
-        //       alert(seetName)
-        //     },
-        //     loaded: function () {
-        //     }
-        //   }
-        // });
-        // const dataTable = json.sheets[seetName].data.dataTable;
-        // const arr: any = [];
-        // Object.keys(dataTable[3]).map((val: any) => {
-        //   console.log('val****************', val)
-        //   // const vals = Object.values(dataTable[newRow][val]);
-        //   // const obj = { index: val, value: vals[0], style: vals[1], formula: vals[2] }
-        //   // arr.push(obj);
-        // })
-
-
-   
-
-
-
-
-        // sheet.addRows(5, 1);
-        // sheet.copyTo(3, 0, 5, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.value);
-        // sheet.copyTo(3, 0, 5, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.style);
-        // sheet.copyTo(3, 0, 5, 0, 1, 7, GC.Spread.Sheets.CopyToOptions.formula);
-
-
 
       }, function (e: any) {
         console.log('e.errorMessage', e.errorMessage)
@@ -261,7 +195,15 @@ public setStartRow(e:any) {
 
   preview(e:any){
     this.loadingBtn = true;
-    // alert()
+    this.selectDiv = false;
+    this.previewBtn = true;
+    // this.hostStyle = {
+    //   // width: 'calc(100% - 280px)',
+    //   width: 'calc(100%)',
+    //   height: '500px',
+    //   overflow: 'hidden',
+    //   float: 'right'
+    // };
     console.log('loadingBtn=>',this.loadingBtn)
     
     let spread = this.spread;
@@ -297,6 +239,9 @@ public setStartRow(e:any) {
       }
     })
     sheet.deleteRows(3,1);
+    // this.hostStyle.width = 'calc(100%)';
+   
+
    
   }
 
@@ -333,7 +278,7 @@ public setStartRow(e:any) {
     navigator.clipboard.writeText(el);
     setTimeout(() => {
       this.isCopied = false;
-    }, 2000)
+    }, 1000)
   }
 
 public repeatRow(type :any) {
